@@ -64,7 +64,7 @@
 			<strong>Created At</strong>
 			<span>{course.createdAt.toLocaleString()}</span>
 			<strong>Created By</strong>
-			<User user={course.user} />
+			<User user={course.user} you={true} self={course.user.id == data.user?.id} />
 			<strong>Visibility</strong>
 			<span>{visibilityText(course.visibility)}</span>
 			<button class="edit" onclick={() => (editing = course)}><Icon i="pencil" />Edit</button>

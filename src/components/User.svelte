@@ -7,6 +7,7 @@
 		compact = false,
 		self = false,
 		href = `/users/${user.id}`,
+		you = false,
 	}: {
 		user: { [K in keyof User]?: User[K] | null };
 		/** If true, don't show the picture */
@@ -15,6 +16,8 @@
 		self?: boolean;
 		/** The URL to link to */
 		href?: string;
+		/** Whether to display a "You" label if `self` */
+		you?: boolean;
 	} = $props();
 </script>
 
@@ -23,6 +26,9 @@
 		<img src={getUserImage(user as Required<User>)} alt={user.name} />
 	{/if}
 	{user.name}
+	{#if self && you}
+		<span class="subtle">(You)</span>
+	{/if}
 </a>
 
 <style>
