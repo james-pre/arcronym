@@ -1,3 +1,4 @@
+import { adapter } from '@axium/server/auth.js';
 import { database } from '@axium/server/database.js';
 import type { Course, CourseShare, Resource } from './data.js';
 
@@ -21,13 +22,15 @@ export async function getCourses(userId: string): Promise<Course[]> {
 	return result;
 }
 
-export async function getCourse(id: string, userId?: string): Promise<Required<Course> | undefined> {
+export async function getCourse(id: string, userId?: string): Promise<(Required<Course> & { _: Course }) | undefined> {
 	const course: Course | undefined = await database.withSchema('arc').selectFrom('Course').selectAll().where('id', '=', id).executeTakeFirst();
 	if (!course) return undefined;
 
 	const shares = await getCourseShares(id);
 
 	return Object.assign(course, {
+		_: { ...course },
+		user: await adapter.getUser!(course.userId),
 		shares,
 		isShared: shares.some(share => share.userId == userId),
 		resources: await database.withSchema('arc').selectFrom('Resource').where('courseId', '=', id).selectAll().execute(),

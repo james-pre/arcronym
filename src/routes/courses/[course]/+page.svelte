@@ -1,12 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Upload from '$components/Upload.svelte';
-	import { resourceInfo, resourceURL } from '$lib/data.js';
+	import User from '$components/User.svelte';
+	import { resourceInfo, resourceURL, visibilityText, type Course } from '$lib/data.js';
 	import { FormDialog, Icon, Toast } from '@axium/server/web';
 	import { parse as parseMD } from 'marked';
+	import CourseForm from '../../../components/CourseForm.svelte';
 
 	const { data, form } = $props();
 	const course = $derived(data.course);
+
+	let editing = $state<Course | null>(null);
 
 	let activeSidebarTab = $state('resources');
 
@@ -52,6 +56,18 @@
 				<button class="upload" onclick={() => (uploading = true)}><Icon i="upload" />Upload</button>
 				<button class="add" onclick={() => (addingResource = true)}><Icon i="plus" />Add</button>
 			</div>
+		</div>
+
+		<div class="section" id="settings" style:display={activeSidebarTab == 'settings' ? 'flex' : 'none'}>
+			<strong>Course Name</strong>
+			<span>{course.name}</span>
+			<strong>Created At</strong>
+			<span>{course.createdAt.toLocaleString()}</span>
+			<strong>Created By</strong>
+			<User user={course.user} />
+			<strong>Visibility</strong>
+			<span>{visibilityText(course.visibility)}</span>
+			<button class="edit" onclick={() => (editing = course)}><Icon i="pencil" />Edit</button>
 		</div>
 	</div>
 
@@ -134,6 +150,8 @@
 	</div>
 </FormDialog>
 
+<CourseForm bind:course={editing} {form} />
+
 <style>
 	textarea {
 		resize: vertical;
@@ -163,6 +181,9 @@
 
 		.section {
 			padding: 0 1em;
+			display: flex;
+			flex-direction: column;
+			gap: 0.5em;
 		}
 
 		.footer {
@@ -204,12 +225,6 @@
 		.active {
 			border-bottom: 2px solid #ccc;
 		}
-	}
-
-	#resources {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5em;
 	}
 
 	#content {

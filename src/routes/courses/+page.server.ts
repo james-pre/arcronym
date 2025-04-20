@@ -1,5 +1,6 @@
-import { touchCourse } from '$lib/data.js';
-import { createCourse, deleteCourse, getCourse, getCourses, updateCourse } from '$lib/data.server.js';
+import { course_edit } from '$lib/actions.server.js';
+import { CreateCourse } from '$lib/data.js';
+import { createCourse, deleteCourse, getCourse, getCourses } from '$lib/data.server.js';
 import { adapter } from '@axium/server/auth.js';
 import { parseForm } from '@axium/server/web/utils.js';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
@@ -16,14 +17,14 @@ export async function load(event: PageServerLoadEvent) {
 }
 
 export const actions = {
-	async create(event) {
+	async course_create(event) {
 		const session = await event.locals.auth();
 		if (!session?.user?.email) return fail(401, { error: 'You are not signed in' });
 
 		const user = await adapter.getUserByEmail!(session.user.email);
 		if (!user) return fail(500, { error: 'User does not exist' });
 
-		const [data, error] = await parseForm(event, touchCourse);
+		const [data, error] = await parseForm(event, CreateCourse);
 		if (error) return error;
 
 		try {
@@ -33,29 +34,7 @@ export const actions = {
 		}
 		return { success: true };
 	},
-	async edit(event) {
-		const session = await event.locals.auth();
-		if (!session?.user?.email) return fail(401, { error: 'You are not signed in' });
-
-		const user = await adapter.getUserByEmail!(session.user.email);
-		if (!user) return fail(500, { error: 'User does not exist' });
-
-		const [data, error] = await parseForm(event, touchCourse);
-		if (error) return error;
-		if (!data.id) return fail(400, { error: 'Course ID is required' });
-
-		const course = await getCourse(data.id);
-		if (!course) return fail(404, { error: 'Course not found' });
-
-		if (course.userId !== user.id) return fail(403, { error: 'Only the course owner can edit the course for now' });
-
-		try {
-			await updateCourse(course);
-		} catch {
-			return fail(500, { error: 'Failed to update course' });
-		}
-		return { success: true };
-	},
+	course_edit,
 	async remove(event) {
 		const session = await event.locals.auth();
 		if (!session?.user?.email) return fail(401, { error: 'You are not signed in' });

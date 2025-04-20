@@ -88,13 +88,19 @@ export interface Course {
 	labels: string[];
 	visibility: number;
 	isShared?: boolean;
+	user?: User;
 	shares?: CourseShare[];
 	resources?: Resource[];
 	projects?: Project[];
 }
 
-export const touchCourse = z.object({
-	id: z.string().uuid().optional(),
+export const EditCourse = z.object({
+	id: z.string().uuid(),
+	name: z.string().min(1, 'Course name is required').max(100),
+	description: z.string().max(1000, 'Description must be less than 1000 characters').optional(),
+});
+
+export const CreateCourse = z.object({
 	name: z.string().min(1, 'Course name is required').max(100),
 	description: z.string().max(1000, 'Description must be less than 1000 characters').optional(),
 });
@@ -113,6 +119,12 @@ export enum Visibility {
 	Private = 0,
 	Friends = 10,
 	Public = 20,
+}
+
+export function visibilityText(vis: Visibility): string {
+	if (vis >= Visibility.Public) return 'Public';
+	if (vis >= Visibility.Friends) return 'Friends';
+	return 'Private';
 }
 
 export enum Permission {

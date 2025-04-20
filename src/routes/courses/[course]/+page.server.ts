@@ -6,6 +6,7 @@ import { error, fail, type Actions } from '@sveltejs/kit';
 import { createHash } from 'node:crypto';
 import type { PageServerLoadEvent } from './$types';
 import { logger } from '@axium/server/io.js';
+import { course_edit } from '../../../lib/actions.server';
 
 const hash = createHash('BLAKE2s256');
 
@@ -23,6 +24,7 @@ export async function load(event: PageServerLoadEvent) {
 }
 
 export const actions = {
+	course_edit,
 	async upload_resource(event) {
 		const session = await event.locals.auth();
 		if (!session?.user?.email) return fail(401, { error: 'You are not signed in' });

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Course } from '$lib/data.js';
 	import { FormDialog, Icon } from '@axium/server/web';
+	import CourseForm from '$components/CourseForm.svelte';
 
 	const { form, data } = $props();
 
@@ -55,24 +56,8 @@
 	<input type="hidden" name="id" id="course-id" value={removing?.id} />
 </FormDialog>
 
-{#snippet courseForm(course?: Course | null)}
-	<div>
-		<label for="name">Course Name</label>
-		<input id="name" name="name" type="text" value={course?.name} />
-	</div>
-	<div>
-		<label for="description">Description</label>
-		<textarea id="description" name="description" value={course?.description}></textarea>
-	</div>
-{/snippet}
-
-<FormDialog bind:active={creating} {form} submitText="Create" action="?/create">
-	{@render courseForm()}
-</FormDialog>
-
-<FormDialog bind:active={editing} {form} submitText="Save" action="?/edit">
-	{@render courseForm(editing)}
-</FormDialog>
+<CourseForm bind:course={creating} {form} isNew={true} />
+<CourseForm bind:course={editing} {form} />
 
 <style>
 	.course {
