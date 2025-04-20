@@ -28,4 +28,3 @@ read -p "(Press enter to continue)"
 npm install
 npx axium db init -s
 sudo npx axium ports enable -N $(which node)
-node scripts/db-init.js
