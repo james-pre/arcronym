@@ -1,11 +1,11 @@
 import type { Session } from '@auth/sveltekit';
 import type { AdapterUser } from '@auth/sveltekit/adapters';
 import { adapter, createAdapter } from '@axium/server/auth.js';
-import { loadDefaults } from '@axium/server/config.js';
+import config from '@axium/server/config.js';
 import * as db from '@axium/server/database.js';
 import { redirect } from '@sveltejs/kit';
 
-loadDefaults();
+config.loadDefaults();
 createAdapter();
 
 export async function load(event): Promise<{

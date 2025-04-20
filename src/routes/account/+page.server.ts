@@ -1,13 +1,13 @@
 import { UserSettings } from '$lib/settings.js';
 import { adapter } from '@axium/server/auth.js';
-import { web } from '@axium/server/config.js';
+import config from '@axium/server/config.js';
 import { editEmail, editName, parseForm } from '@axium/server/web/server';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 
 export async function load(event) {
 	const data = await event.parent();
 	if (!data.user) throw redirect(307, '/auth/signin');
-	return { session: data.session, user: data.user, prefix: web.prefix };
+	return { session: data.session, user: data.user, prefix: config.web.prefix };
 }
 
 export const actions = {
