@@ -89,9 +89,11 @@
 			</div>
 		{/each}
 
-		<div id="content-default" style:display="flex" style:align-items="center" style:justify-content="center" style:height="100%" style:color="#aaaa">
-			<p>Open a resource to get started</p>
-		</div>
+		{#if !activeItemID}
+			<div id="content-default" style:display="flex" style:align-items="center" style:justify-content="center" style:height="100%" style:color="#aaaa">
+				<p>Open a resource to get started</p>
+			</div>
+		{/if}
 	</div>
 </div>
 
