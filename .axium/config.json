@@ -10,5 +10,7 @@
 	},
 	"web": {
 		"prefix": "/account"
-	}
+	},
+	"plugins": ["@axium/shares/plugin"],
+	"shares": ["arc.Course"]
 }

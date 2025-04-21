@@ -1,5 +1,5 @@
 <script lang="ts">
-	import User from '$components/User.svelte';
+	import { UserCard } from '@axium/server/web';
 
 	const { data } = $props();
 
@@ -17,7 +17,7 @@
 {#if user}
 	<div id="friends" class="content">
 		{#each friends as friend}
-			<User user={friend} />
+			<UserCard user={friend} />
 		{/each}
 	</div>
 {:else}

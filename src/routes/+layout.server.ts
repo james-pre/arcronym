@@ -5,7 +5,7 @@ import config from '@axium/server/config.js';
 import * as db from '@axium/server/database.js';
 import { redirect } from '@sveltejs/kit';
 
-config.loadDefaults();
+await config.loadDefaults();
 createAdapter();
 
 export async function load(event): Promise<{

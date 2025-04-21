@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Upload from '$components/Upload.svelte';
-	import User from '$components/User.svelte';
-	import { resourceInfo, resourceURL, visibilityText, type Course } from '$lib/data.js';
-	import { FormDialog, Icon, Toast } from '@axium/server/web';
+	import { resourceInfo, resourceURL, type Course } from '$lib/data.js';
+	import { FormDialog, Icon, Toast, UserCard } from '@axium/server/web';
 	import { parse as parseMD } from 'marked';
 	import CourseForm from '../../../components/CourseForm.svelte';
+	import { visibilityText } from '@axium/shares/common.js';
 
 	const { data, form } = $props();
 	const course = $derived(data.course);
@@ -64,7 +64,7 @@
 			<strong>Created At</strong>
 			<span>{course.createdAt.toLocaleString()}</span>
 			<strong>Created By</strong>
-			<User user={course.user} you={true} self={course.user.id == data.user?.id} />
+			<UserCard user={course.user} you={true} self={course.user.id == data.user?.id} />
 			<strong>Visibility</strong>
 			<span>{visibilityText(course.visibility)}</span>
 			<button class="edit" onclick={() => (editing = course)}><Icon i="pencil" />Edit</button>
@@ -91,13 +91,13 @@
 					</form>
 				{:else if resource.type == 'text/markdown'}
 					<div style:line-height="1.6" style:margin-bottom="1em">{@html parseMD(resource.content, { async: false })}</div>
-				{:else if resource.type == 'audio'}
+				{:else if resource.type.startsWith('audio/')}
 					<audio src={resourceURL(resource.content)} controls></audio>
-				{:else if resource.type == 'video'}
+				{:else if resource.type.startsWith('video/')}
 					<video src={resourceURL(resource.content)} controls>
 						<track kind="captions" />
 					</video>
-				{:else if resource.type == 'website'}
+				{:else if resource.type == 'text/x-uri'}
 					<iframe src={resource.content} width="100%" height="100%" style:border="1px solid #5555" title={resource.name}></iframe>
 				{:else}
 					<a href={resource.content} download={resource.name}>{resource.name}</a>
@@ -155,6 +155,10 @@
 <style>
 	textarea {
 		resize: vertical;
+		background-color: #222;
+	}
+
+	#content textarea {
 		background-color: inherit;
 		border: none;
 	}

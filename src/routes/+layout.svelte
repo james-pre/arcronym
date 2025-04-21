@@ -1,6 +1,5 @@
 <script lang="ts">
-	import User from '$components/User.svelte';
-	import { Icon } from '@axium/server/web';
+	import { Icon, UserCard } from '@axium/server/web';
 	const { children, data } = $props();
 	const user = $derived(data.user);
 </script>
@@ -16,7 +15,7 @@
 
 <div id="user-menu">
 	{#if user}
-		<User {user} self href="/account" />
+		<UserCard {user} self href="/account" />
 	{:else}
 		<a href="/auth/signin">
 			<button class="button">

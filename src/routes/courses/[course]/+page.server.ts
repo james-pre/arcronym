@@ -1,12 +1,13 @@
-import { AddResource, hasPermission, Permission, RemoveResource, UpdatePlainText, UploadResource } from '$lib/data.js';
+import { AddResource, RemoveResource, UpdatePlainText, UploadResource } from '$lib/data.js';
 import { createResource, deleteResource, getCourse, updateResource } from '$lib/data.server.js';
 import { adapter } from '@axium/server/auth.js';
+import { logger } from '@axium/server/io.js';
 import { parseForm } from '@axium/server/web/utils.js';
+import { hasPermission, Permission } from '@axium/shares/common.js';
 import { error, fail, type Actions } from '@sveltejs/kit';
 import { createHash } from 'node:crypto';
-import type { PageServerLoadEvent } from './$types';
-import { logger } from '@axium/server/io.js';
 import { course_edit } from '../../../lib/actions.server';
+import type { PageServerLoadEvent } from './$types';
 
 const hash = createHash('BLAKE2s256');
 

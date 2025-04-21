@@ -1,4 +1,5 @@
 import type { User } from '@auth/sveltekit';
+import type { Share } from '@axium/shares/common.js';
 import * as z from 'zod';
 
 export function randomID() {
@@ -89,7 +90,7 @@ export interface Course {
 	visibility: number;
 	isShared?: boolean;
 	user?: User;
-	shares?: CourseShare[];
+	shares?: Share[];
 	resources?: Resource[];
 	projects?: Project[];
 }
@@ -104,54 +105,3 @@ export const CreateCourse = z.object({
 	name: z.string().min(1, 'Course name is required').max(100),
 	description: z.string().max(1000, 'Description must be less than 1000 characters').optional(),
 });
-
-/** @todo Consider moving shares into a reusable package (e.g. @axium/acl) */
-
-export interface CourseShare {
-	courseId: string;
-	userId: string;
-	user?: User;
-	sharedAt: Date;
-	permission: number;
-}
-
-export enum Visibility {
-	Private = 0,
-	Friends = 10,
-	Public = 20,
-}
-
-export function visibilityText(vis: Visibility): string {
-	if (vis >= Visibility.Public) return 'Public';
-	if (vis >= Visibility.Friends) return 'Friends';
-	return 'Private';
-}
-
-export enum Permission {
-	None = 0,
-	Read = 1,
-	Comment = 2,
-	Edit = 3,
-	Manage = 5,
-}
-
-export const permissionNames = {
-	[Permission.None]: 'No Permissions',
-	[Permission.Read]: 'Reader',
-	[Permission.Comment]: 'Commenter',
-	[Permission.Edit]: 'Editor',
-	[Permission.Manage]: 'Manager',
-} satisfies Record<Permission, string>;
-
-export function hasPermission(course: Course, userId: string | undefined, permission: number): boolean {
-	if (course.visibility >= Visibility.Public) return true;
-	if (!userId) return false;
-	if (course.userId == userId) return true;
-
-	/** @todo Once friends are implemented, add logic here */
-
-	const share = course.shares?.find(share => share.userId == userId);
-	if (!share) return false;
-
-	return share.permission >= permission;
-}

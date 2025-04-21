@@ -11,7 +11,7 @@ export async function statusText() {
 	return `${await count('arc.Course')} courses, ${await count('arc.Resource')} resources`;
 }
 
-async function initDB(opt, db, { done, warnExists }) {
+export async function db_init(opt, db, { done, warnExists }) {
 	const out = opt.output;
 
 	out('start', 'Creating schema arc');
@@ -36,24 +36,6 @@ async function initDB(opt, db, { done, warnExists }) {
 	out('start', 'Creating index for Course.userId');
 	await db.schema.withSchema('arc').createIndex('Course_userId_index').on('Course').column('userId').execute().then(done).catch(warnExists);
 
-	out('start', 'Creating table CourseShare');
-	await db.schema
-		.withSchema('arc')
-		.createTable('CourseShare')
-		.addColumn('courseId', 'uuid', col => col.notNull().references('Course.id').onDelete('cascade').onUpdate('cascade'))
-		.addColumn('userId', 'uuid', col => col.notNull().references('public.User.id').onDelete('cascade').onUpdate('cascade'))
-		.addColumn('sharedAt', 'timestamptz', col => col.notNull().defaultTo(sql`now()`))
-		.addColumn('permission', 'smallint', col => col.notNull())
-		.execute()
-		.then(done)
-		.catch(warnExists);
-
-	out('start', 'Creating index for CourseShare.userId');
-	await db.schema.withSchema('arc').createIndex('CourseShare_userId_index').on('CourseShare').column('userId').execute().then(done).catch(warnExists);
-
-	out('start', 'Creating index for CourseShare.courseId');
-	await db.schema.withSchema('arc').createIndex('CourseShare_courseId_index').on('CourseShare').column('courseId').execute().then(done).catch(warnExists);
-
 	out('start', 'Creating table Resource');
 	await db.schema
 		.withSchema('arc')
@@ -73,9 +55,3 @@ async function initDB(opt, db, { done, warnExists }) {
 	out('start', 'Creating index for Resource.userId');
 	await db.schema.withSchema('arc').createIndex('Resource_userId_index').on('Resource').column('userId').execute().then(done).catch(warnExists);
 }
-
-export const db = {
-	init: initDB,
-	remove() {},
-	wipe() {},
-};
