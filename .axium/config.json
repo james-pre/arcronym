@@ -11,6 +11,6 @@
 	"web": {
 		"prefix": "/account"
 	},
-	"plugins": ["@axium/shares/plugin"],
+	"plugins": ["../scripts/plugin.js", "@axium/shares/plugin"],
 	"shares": ["arc.Course"]
 }
