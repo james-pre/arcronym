@@ -62,7 +62,7 @@ export const RemoveResource = z.object({
 
 export const UpdatePlainText = z.object({
 	id: z.string().uuid(),
-	content: z.string().max(10_000, 'Content must be less than 100k characters (why are you trying to write so much?!)'),
+	content: z.string().max(100_000, 'Content must be less than 100k characters (why are you trying to write so much?!)'),
 });
 
 /**
