@@ -10,13 +10,6 @@ export interface DBCourse {
 	labels: Generated<string[]>;
 }
 
-export interface DBCourseShare {
-	courseId: string;
-	userId: string;
-	sharedAt: Generated<Date>;
-	permission: number;
-}
-
 export interface DBResource {
 	id: Generated<string>;
 	courseId: string;
@@ -33,6 +26,5 @@ declare module '@axium/server/database.js' {
 	export interface Schema {
 		Course: DBCourse;
 		Resource: DBResource;
-		CourseShare: DBCourseShare;
 	}
 }

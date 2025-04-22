@@ -13,7 +13,7 @@ export async function getCourses(userId: string): Promise<Course[]> {
 	for (const course of await database
 		.withSchema('arc')
 		.selectFrom('Course as course')
-		.innerJoin('CourseShare as share', 'share.courseId', 'course.id')
+		.innerJoin('shares.Course as share', 'share.itemId', 'course.id')
 		.where('share.userId', '=', userId)
 		.selectAll()
 		.execute()) {
